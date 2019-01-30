@@ -1,6 +1,6 @@
 package com.v.inf.mq.task.job;
 
-import com.v.inf.mq.task.executor.BrokerRetryExecutor;
+import com.v.inf.mq.task.executor.ProducerRetryExecutor;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -17,33 +17,33 @@ import org.springframework.stereotype.Component;
  * Create on 2019/1/28
  */
 @Component
-public class RetryJob extends QuartzJobBean {
+public class ProducerRetryJob extends QuartzJobBean {
 
     @Autowired
-    private BrokerRetryExecutor brokerRetryExecutor;
+    private ProducerRetryExecutor producerRetryExecutor;
 
     @Bean
-    public JobDetail brokerRetryJobDetail() {
+    public JobDetail producerRetryJobDetail() {
         JobDetailFactoryBean jobDetailFactoryBean = new JobDetailFactoryBean();
         jobDetailFactoryBean.setJobClass(this.getClass());
-        jobDetailFactoryBean.setName("broker_retry_job");
+        jobDetailFactoryBean.setName("producer_retry_job");
         jobDetailFactoryBean.setDurability(true);
         jobDetailFactoryBean.afterPropertiesSet();
         return jobDetailFactoryBean.getObject();
     }
 
     @Bean
-    public CronTriggerFactoryBean brokerRetryTrigger(@Qualifier("brokerRetryJobDetail") JobDetail jobDetail) {
+    public CronTriggerFactoryBean producerRetryTrigger(@Qualifier("producerRetryJobDetail") JobDetail jobDetail) {
         CronTriggerFactoryBean triggerFactoryBean = new CronTriggerFactoryBean();
         triggerFactoryBean.setJobDetail(jobDetail);
         triggerFactoryBean.setStartDelay(1000);
-        triggerFactoryBean.setName("broker_retry_trigger");
+        triggerFactoryBean.setName("producer_retry_trigger");
         triggerFactoryBean.setCronExpression("*/1 * * * * ?");
         return triggerFactoryBean;
     }
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        brokerRetryExecutor.execute();
+        producerRetryExecutor.execute();
     }
 }

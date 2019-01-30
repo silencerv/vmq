@@ -1,8 +1,9 @@
 package com.v;
 
-import com.v.inf.mq.broker.App;
+
+import com.v.inf.mq.task.App;
+import com.v.inf.mq.task.executor.BrokerRetryExecutor;
 import com.v.inf.mq.task.executor.ProducerRetryExecutor;
-import com.v.inf.mq.task.executor.RetryExecutor;
 import org.junit.Test;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -15,8 +16,8 @@ public class TaskTest {
     @Test
     public void TestRetryTask() throws Exception {
         ConfigurableApplicationContext applicationContext = SpringApplication.run(App.class);
-        RetryExecutor retryExecutor = applicationContext.getBean(RetryExecutor.class);
-        retryExecutor.execute();
+        BrokerRetryExecutor brokerRetryExecutor = applicationContext.getBean(BrokerRetryExecutor.class);
+        brokerRetryExecutor.execute();
         System.in.read();
     }
 

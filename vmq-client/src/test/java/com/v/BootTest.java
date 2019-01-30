@@ -48,7 +48,7 @@ public class BootTest {
 //    }
 
     public static void main(String[] args) throws Exception {
-        ApplicationContext applicationContext = SpringApplication.run(App.class, args);
+        ApplicationContext applicationContext = SpringApplication.run(BootTest.class, args);
         BootTest app = applicationContext.getBean(BootTest.class);
         for (int i = 0; i < 100; i++) {
             app.selectStu();

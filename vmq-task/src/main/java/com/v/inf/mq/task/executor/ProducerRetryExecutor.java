@@ -5,9 +5,12 @@ import com.v.inf.mq.client.service.DbMessageStoreService;
 import com.v.inf.mq.client.service.StoreServiceManager;
 import com.v.inf.mq.store.message.StoreMessage;
 import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +22,8 @@ import java.util.List;
 @Component
 public class ProducerRetryExecutor implements Executor {
 
+    private static final Logger logger = LoggerFactory.getLogger(BrokerRetryExecutor.class);
+
     /**
      * 这是一个和吞吐量相关的参数，根据实际情况设定
      */
@@ -27,7 +32,7 @@ public class ProducerRetryExecutor implements Executor {
     /**
      * 需要扫描的数据库
      */
-    @Autowired
+    @Resource(name = "producerDataSources")
     private List<DataSource> dataSources;
 
     @Autowired
@@ -35,6 +40,7 @@ public class ProducerRetryExecutor implements Executor {
 
     @Override
     public void execute() {
+        logger.info("start producer retry job ... ");
         dataSources.forEach(dataSource -> {
             DbMessageStoreService storeService = StoreServiceManager.getStoreService(dataSource);
             List<StoreMessage> storeMessages = storeService.queryReady(DateUtils.addMilliseconds(new Date(), -100), LIMIT);
@@ -43,5 +49,6 @@ public class ProducerRetryExecutor implements Executor {
                 storeService.success(storeMessage.getMessageId());
             });
         });
+        logger.info("end producer retry job ... ");
     }
 }
