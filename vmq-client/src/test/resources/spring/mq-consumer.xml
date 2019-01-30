@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mq="http://www.vmq.com/schema/vmq"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.vmq.com/schema/vmq
+       http://www.vmq.com/schema/vmq.xsd">
+
+    <bean id="exMessageListener" class="com.v.ExMessageListener"/>
+    <bean id="printMessageListener" class="com.v.PrintMessageListener"/>
+    <bean id="waitMessageListener" class="com.v.WaitMessageListener"/>
+
+    <mq:annotation-driven/>
+
+    <!--<mq:consumer>-->
+    <!--<mq:listener subject="test"-->
+    <!--group="v"-->
+    <!--ref="printMessageListener" />-->
+    <!--<mq:listener subject="mq_dead_letter"-->
+    <!--group="v"-->
+    <!--ref="printMessageListener"/>-->
+    <!--</mq:consumer>-->
+</beans>

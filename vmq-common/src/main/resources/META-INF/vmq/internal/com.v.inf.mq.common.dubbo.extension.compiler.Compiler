@@ -1,0 +1,3 @@
+adaptive=com.v.inf.mq.common.dubbo.extension.compiler.support.AdaptiveCompiler
+jdk=com.v.inf.mq.common.dubbo.extension.compiler.support.JdkCompiler
+javassist=com.v.inf.mq.common.dubbo.extension.compiler.support.JavassistCompiler

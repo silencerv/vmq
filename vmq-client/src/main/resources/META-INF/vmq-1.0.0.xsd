@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns="http://www.vmq.com/schema/vmq"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://www.vmq.com/schema/vmq"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified"
+>
+
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:import namespace="http://www.springframework.org/schema/tool"/>
+
+    <xsd:element name="consumer">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="listener" type="listenerContainerBaseType" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:complexType name="listenerContainerBaseType">
+        <xsd:attribute name="id" type="xsd:string"></xsd:attribute>
+        <xsd:attribute name="subject" type="xsd:string" use="required"></xsd:attribute>
+        <xsd:attribute name="group" type="xsd:string" use="optional" default=""></xsd:attribute>
+        <xsd:attribute name="ref" type="xsd:string"></xsd:attribute>
+        <xsd:attribute name="methodName" type="xsd:string" default="onMessage"></xsd:attribute>
+        <xsd:attribute name="concurrency" type="xsd:string" default="10"></xsd:attribute>
+        <xsd:attribute name="maxConcurrency" type="xsd:string" default="20"></xsd:attribute>
+        <!--每次从队列取得消息的数量，也是每个consumer 等待队列的数量-->
+        <xsd:attribute name="prefetchCount" type="xsd:string" default="10"></xsd:attribute>
+        <xsd:attribute name="requeueRejected" type="xsd:string" default="false"></xsd:attribute>
+        <xsd:attribute name="recoveryInterval" type="xsd:string"></xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:element name="annotation-driven">
+    </xsd:element>
+</xsd:schema>

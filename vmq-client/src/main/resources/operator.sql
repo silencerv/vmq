@@ -1,0 +1,1 @@
+insert into mq.message(message_id,subject,content,body,try_count,next_retry,create_time) values (?, ?, ?, ?, ?, ?, now());
