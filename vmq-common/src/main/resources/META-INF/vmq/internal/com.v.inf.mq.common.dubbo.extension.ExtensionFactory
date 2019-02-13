@@ -1,2 +1,0 @@
-adaptive=com.v.inf.mq.common.dubbo.extension.factory.AdaptiveExtensionFactory
-spi=com.v.inf.mq.common.dubbo.extension.factory.SpiExtensionFactory

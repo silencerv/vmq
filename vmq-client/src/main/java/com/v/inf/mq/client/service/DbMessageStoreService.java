@@ -1,6 +1,5 @@
 package com.v.inf.mq.client.service;
 
-import com.sun.istack.internal.Nullable;
 import com.v.inf.mq.store.message.ProducerMessage;
 import com.v.inf.mq.store.message.StoreMessage;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -21,7 +20,6 @@ public class DbMessageStoreService {
      * 默认数据源
      * 若当前无事务，则会使用默认数据源
      */
-    @Nullable
     private DataSource dataSource;
 
     private JdbcTemplate jdbcTemplate;

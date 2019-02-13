@@ -36,6 +36,7 @@
         <logback.version>1.2.3</logback.version>
         <junit.version>4.11</junit.version>
         <druid-spring-boot.version>1.1.10</druid-spring-boot.version>
+        <dubbo.common.version>2.7.0</dubbo.common.version>
     </properties>
 
     <dependencies>
@@ -142,6 +143,12 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid-spring-boot.version}</version>
+            </dependency>
+            <!-- spi -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-common</artifactId>
+                <version>${dubbo.common.version}</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>

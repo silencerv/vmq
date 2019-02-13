@@ -3,9 +3,9 @@ package com.v.inf.mq.client.producer;
 import com.v.inf.mq.Message;
 import com.v.inf.mq.MessageProducer;
 import com.v.inf.mq.client.admin.RabbitAdminService;
-import com.v.inf.mq.common.dubbo.extension.ExtensionLoader;
 import com.v.inf.mq.exception.MessageException;
 import com.v.inf.mq.rabbit.broker.RabbitBroker;
+import org.apache.dubbo.common.extension.ExtensionLoader;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.InitializingBean;
 

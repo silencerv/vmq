@@ -1,8 +1,8 @@
 package com.v.inf.mq.client.admin;
 
 import com.v.inf.mq.client.listener.VMQListenerAdaptor;
-import com.v.inf.mq.common.dubbo.extension.Constants;
-import com.v.inf.mq.common.dubbo.extension.SPI;
+import org.apache.dubbo.common.Constants;
+import org.apache.dubbo.common.extension.SPI;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 
 /**

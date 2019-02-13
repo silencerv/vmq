@@ -2,8 +2,8 @@ package com.v.inf.mq.task;
 
 import com.v.inf.mq.broker.rabbit.BrokerConfirmCallback;
 import com.v.inf.mq.client.admin.RabbitAdminService;
-import com.v.inf.mq.common.dubbo.extension.ExtensionLoader;
 import com.v.inf.mq.rabbit.broker.RabbitBroker;
+import org.apache.dubbo.common.extension.ExtensionLoader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
