@@ -5,13 +5,13 @@ import com.v.inf.mq.client.admin.RabbitAdminService;
 import com.v.inf.mq.common.dubbo.extension.ExtensionLoader;
 import com.v.inf.mq.rabbit.broker.RabbitBroker;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @anthor v
  * Create on 2019/1/28
  */
-@Component
+@Configuration
 public class MQConfiguration {
 
     @Bean

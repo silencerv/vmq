@@ -13,8 +13,13 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-@Import(WMQAnnotationConfigurationSelector.class)
+@Import(EnableVMQConfiguration.class)
 public @interface EnableVMQ {
 
-
+    /**
+     * 注册producer
+     * 填写producer class 即可
+     * @return
+     */
+    VMQProducer[]  producers() default {};
 }
