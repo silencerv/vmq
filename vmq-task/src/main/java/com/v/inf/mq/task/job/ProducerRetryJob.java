@@ -6,6 +6,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
 import org.springframework.scheduling.quartz.JobDetailFactoryBean;
@@ -33,12 +34,13 @@ public class ProducerRetryJob extends QuartzJobBean {
     }
 
     @Bean
-    public CronTriggerFactoryBean producerRetryTrigger(@Qualifier("producerRetryJobDetail") JobDetail jobDetail) {
+    public CronTriggerFactoryBean producerRetryTrigger(@Qualifier("producerRetryJobDetail") JobDetail jobDetail,
+                                                       @Value("${vmq.task.corn.producer.retry}") String producerRetryCorn) {
         CronTriggerFactoryBean triggerFactoryBean = new CronTriggerFactoryBean();
         triggerFactoryBean.setJobDetail(jobDetail);
         triggerFactoryBean.setStartDelay(1000);
         triggerFactoryBean.setName("producer_retry_trigger");
-        triggerFactoryBean.setCronExpression("*/1 * * * * ?");
+        triggerFactoryBean.setCronExpression(producerRetryCorn);
         return triggerFactoryBean;
     }
 
