@@ -2,8 +2,13 @@
 ## 简介
 VMQ是基于RabbitMQ开发，目的是为了提升业务开发效率，支持事务消息、延迟消息以及便利的并发配置
 
+---
+
 ## 架构
 ![image](https://github.com/silencerv/vmq/blob/master/docs/images/arch.png)
+
+---
+
 ## 特征
 * 简单的配置
 * 延迟消息
@@ -11,6 +16,8 @@ VMQ是基于RabbitMQ开发，目的是为了提升业务开发效率，支持事
 * 灵活的消息重试
 * 支持Consumer并发配置
 * 基于SPI进行扩展
+
+---
 
 ## 基本配置
 无论是生产者还是消费者，都需要连接rabbit broker，VMQ通过读取配置文件来得到用户的配置
@@ -25,6 +32,8 @@ mq.connectionFactory.username=user
 mq.connectionFactory.password=password
 ```
 
+---
+
 ## Producer配置
 ### 概述
 VMQ的Producer支持事务消息，保证数据库操作和消息具有事务性（全部成功或者全部失败），同时消息的发送是异步的不会阻塞业务操作。
@@ -32,18 +41,57 @@ VMQ的Producer支持事务消息，保证数据库操作和消息具有事务性
 如果不需要事务消息，只需配置com.v.inf.mq.client.producer.DirectMessageProducer作为类型来初始化即可(注解@VMQProducer目前暂不支持)
 
 事务消息还需要配置Task任务来进行消息的失败补偿，详见Task章节的说明
+
+事务消息需要在业务数据库初始化一张数据表
+```sql
+CREATE DATABASE IF NOT EXISTS mq;
+CREATE TABLE mq.message_producer (
+ `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+ `message_id` varchar(255) NOT NULL COMMENT '消息id',
+ `subject` varchar(255) NOT NULL COMMENT '消息主题',
+ `content` TEXT NOT NULL COMMENT '消息属性',
+ `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() COMMENT '创建时间',
+ `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_message_id` (`message_id`)
+)ENGINE=InnoDB
+
+```
+
 ### 配置
+Producer的消息发送依赖于事务提交的操作，所以注解和XML均需要配置VMQTransactionManager
+
 #### 注解配置
 ```java
-@EnableVMQ(producers = @VMQProducer)
+//省略数据源配置
+@EnableVMQ(producers = @VMQProducer(dataSource = "dataSource"))
+public class VMQConfiguration {
+
+    /**
+     * 注意数据源必须是消息要绑定的业务库数据源
+     * @param dataSource
+     * @return
+     */
+    @Bean
+    public MQTransactionManager buildMQTransactionManager(@Qualifier("dataSource") DataSource dataSource) {
+        return new MQTransactionManager(dataSource);
+    }
+}
 ```
 #### XML配置
-
+XML依然也是配置Producer和TxManager
 ```xml
+<!-- 此处省略数据源配置！ -->
+<bean class="com.v.inf.mq.client.tx.MQTransactionManager">
+    <constructor-arg ref="dataSource"/>
+</bean>
+
 <bean id="messageProducer" class="com.v.inf.mq.client.producer.SingleDbMessageProducer">
-        <property name="dataSource" ref="dataSource"/>
+    <property name="dataSource" ref="dataSource"/>
 </bean>
 ```
+
+---
 
 ## Consumer配置
 ### Annotation
@@ -56,7 +104,6 @@ VMQ的Producer支持事务消息，保证数据库操作和消息具有事务性
  
 * 配置XML元素 &lt;mq:annotation-driven/> 以开启注解配置
 
----
 
 VMQ的消息消费者注解配置是非常便捷的
 
@@ -95,5 +142,28 @@ public class PrintMessageListener implements MessageListener {
 </mq:consumer>
 ```
 
+---
 
 ## TASK部署
+* TASK依赖于数据库表来进行消息重试，需要先初始化数据库
+```sql
+CREATE DATABASE IF NOT EXISTS mq;
+CREATE TABLE mq.message (
+ `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+ `message_id` varchar(255) NOT NULL COMMENT '消息id',
+ `subject` varchar(255) NOT NULL COMMENT '消息主题',
+ `content` TEXT NOT NULL COMMENT '消息属性',
+ `try_count` INT NOT NULL DEFAULT 0 COMMENT '重试次数',
+ `next_retry` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP()  COMMENT '下次重试时间',
+ `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() COMMENT '创建时间',
+ `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_message_id` (`message_id`),
+  KEY `idx_next_retry` (`next_retry`)
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8
+```
+* TASK任务整合了Quartz来进行分布式调度，所以还需要初始化Quartz数据库表，初始化SQL放置在vmq-task/src/main/resources/init目录中，需要手动执行SQL来进行初始化
+
+以上两个初始化步骤完成后，即可开启TASK来进行消息重试补偿
+
+---
