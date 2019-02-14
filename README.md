@@ -59,15 +59,35 @@ CREATE TABLE mq.message_producer (
 ```
 
 ### 配置
+Producer的消息发送依赖于事务提交的操作，所以注解和XML均需要配置VMQTransactionManager
+
 #### 注解配置
 ```java
-@EnableVMQ(producers = @VMQProducer)
+//省略数据源配置
+@EnableVMQ(producers = @VMQProducer(dataSource = "dataSource"))
+public class VMQConfiguration {
+
+    /**
+     * 注意数据源必须是消息要绑定的业务库数据源
+     * @param dataSource
+     * @return
+     */
+    @Bean
+    public MQTransactionManager buildMQTransactionManager(@Qualifier("dataSource") DataSource dataSource) {
+        return new MQTransactionManager(dataSource);
+    }
+}
 ```
 #### XML配置
-
+XML依然也是配置Producer和TxManager
 ```xml
+<!-- 此处省略数据源配置！ -->
+<bean class="com.v.inf.mq.client.tx.MQTransactionManager">
+    <constructor-arg ref="dataSource"/>
+</bean>
+
 <bean id="messageProducer" class="com.v.inf.mq.client.producer.SingleDbMessageProducer">
-        <property name="dataSource" ref="dataSource"/>
+    <property name="dataSource" ref="dataSource"/>
 </bean>
 ```
 
