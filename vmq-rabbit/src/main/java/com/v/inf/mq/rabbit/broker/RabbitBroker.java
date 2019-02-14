@@ -78,8 +78,9 @@ public class RabbitBroker implements MessageBroker, InitializingBean {
     public void send(Message message) throws MessageException {
         try {
             sendInternal(message);
+            logger.info("send message:{}", message.getMessageId());
         } catch (Throwable t) {
-            logger.error("send message fail: {}", message.getMessageId(), t);
+            logger.error("send message fail:{}", message.getMessageId(), t);
             throw new MessageException(t);
         }
 

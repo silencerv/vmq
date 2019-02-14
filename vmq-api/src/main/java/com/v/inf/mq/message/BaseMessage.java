@@ -77,8 +77,8 @@ public class BaseMessage implements Message {
     }
 
     private void setObjectAttr(String name, Object value) {
-        if (protectedKeyNames.contains(name))
-            throw new IllegalArgumentException("property name [" + name + "] is protected !");
+//        if (protectedKeyNames.contains(name))
+//            throw new IllegalArgumentException("property name [" + name + "] is protected !");
         attrs.put(name, value);
     }
 

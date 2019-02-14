@@ -21,15 +21,15 @@ public class ProducerConfirmCallback implements RabbitTemplate.ConfirmCallback {
         String[] idAndDbKey = StringUtils.split(correlationData.getId(), "$");
         String messageId = idAndDbKey[0];
         if (ack) {
-            logger.info("receive ack confirm:{}", messageId);
+            logger.debug("receive ack confirm:{}", messageId);
             if (idAndDbKey.length > 1) {
                 String dbKey = idAndDbKey[1];
                 DbMessageStoreService storeService = StoreServiceManager.getStoreService(dbKey);
                 storeService.success(messageId);
-                logger.info("delete message :{} , from :{}!", messageId, dbKey);
+                logger.debug("delete message :{} , from :{}!", messageId, dbKey);
             }
         } else {
-            logger.info("receive nack confirm:{}", messageId);
+            logger.warn("receive nack confirm:{}", messageId);
         }
     }
 }

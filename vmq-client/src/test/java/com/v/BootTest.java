@@ -1,11 +1,14 @@
 package com.v;
 
 import com.v.inf.mq.Message;
+import com.v.inf.mq.client.annotation.EnableVMQ;
+import com.v.inf.mq.client.annotation.VMQProducer;
 import com.v.inf.mq.client.producer.SingleDbMessageProducer;
+import com.v.inf.mq.client.tx.MQTransactionManager;
 import com.v.inf.mq.message.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -20,7 +23,8 @@ import java.util.Map;
 /**
  * Hello world!
  */
-@EnableAutoConfiguration
+@SpringBootApplication
+@EnableVMQ(producers = @VMQProducer)
 @ComponentScans({@ComponentScan(basePackages = "com.v.inf.mq.client")})
 public class BootTest {
 
@@ -35,17 +39,11 @@ public class BootTest {
         return new JdbcTemplate(dataSource);
     }
 
-    @Bean
-    public SingleDbMessageProducer buildDbMessageProducer(DataSource dataSource) {
-        SingleDbMessageProducer singleDbMessageProducer = new SingleDbMessageProducer();
-        singleDbMessageProducer.setDataSource(dataSource);
-        return singleDbMessageProducer;
-    }
 
-//    @Bean
-//    public MQTransactionManager buildMQTransactionManager(DataSource dataSource) {
-//        return new MQTransactionManager(dataSource);
-//    }
+    @Bean
+    public MQTransactionManager buildMQTransactionManager(DataSource dataSource) {
+        return new MQTransactionManager(dataSource);
+    }
 
     public static void main(String[] args) throws Exception {
         ApplicationContext applicationContext = SpringApplication.run(BootTest.class, args);

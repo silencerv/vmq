@@ -79,10 +79,10 @@ public abstract class AbstractDbMessageProducer implements MessageProducer, Init
             message.setAttr(Constants.DB_KEY, dataSourceKey);
             MessageSender messageSender = new MessageSender(rabbitBroker, producerMessage);
             MessageManager.addSender(messageSender);
-            LOGGER.info("save message to db , id :{}, dbKey: {}", message.getMessageId(), dataSourceKey);
+            LOGGER.debug("save message to db , id :{}, dbKey: {}", message.getMessageId(), dataSourceKey);
         } else {
             rabbitBroker.send(message);
-            LOGGER.info("send not transaction message :{}", message.getMessageId());
+            LOGGER.debug("send not transaction message :{}", message.getMessageId());
         }
 
     }
