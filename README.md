@@ -3,7 +3,7 @@
 VMQ是基于RabbitMQ开发，目的是为了提升业务开发效率，支持事务消息、延迟消息以及便利的并发配置
 
 ## 架构
-
+![image](https://github.com/silencerv/vmq/blob/master/docs/images/arch.png)
 ## 特征
 * 简单的配置
 * 延迟消息
