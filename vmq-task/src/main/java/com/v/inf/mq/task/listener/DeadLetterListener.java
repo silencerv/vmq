@@ -1,4 +1,4 @@
-package com.v.inf.mq.broker.listener;
+package com.v.inf.mq.task.listener;
 
 import com.v.inf.mq.Message;
 import com.v.inf.mq.MessageListener;

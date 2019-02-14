@@ -1,4 +1,4 @@
-CREATE DATABASE mq;
+CREATE DATABASE IF NOT EXISTS mq;
 CREATE TABLE mq.message_producer (
  `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
  `message_id` varchar(255) NOT NULL COMMENT '消息id',
