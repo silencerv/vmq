@@ -76,8 +76,6 @@ public void onMessage(Message message)
 ### 概述
 VMQ的Producer支持事务消息，保证数据库操作和消息具有事务性（全部成功或者全部失败），同时消息的发送是异步的不会阻塞业务操作。
 
-如果不需要事务消息，只需配置com.v.inf.mq.client.producer.DirectMessageProducer作为类型来初始化即可(注解@VMQProducer目前暂不支持)
-
 事务消息还需要配置Task任务来进行消息的失败补偿，详见Task章节的说明
 
 事务消息需要在业务数据库初始化一张数据表
@@ -129,6 +127,30 @@ XML依然也是配置Producer和TxManager
 </bean>
 ```
 
+经过上述配置之后，就可以很便捷的发送消息了
+
+```java
+@Component
+public class MessageSender {
+
+    @Autowired
+    private MessageProducer messageProducer;
+
+    public void sendMessage(){
+        Message message = MessageBuilder.aBasicMessage()
+                .withSubject("subject")
+                //发送延迟消息
+                .withDelayMills(100)
+                .build();
+        //消息内容
+        message.setAttr("content", "hello");
+        messageProducer.send(message);
+    }
+}
+```
+
+另外，如果不需要事务消息，初始化com.v.inf.mq.client.producer.DirectMessageProducer作为Producer即可 (注解@VMQProducer目前暂不支持)
+
 ---
 
 ## 消费者配置
@@ -155,6 +177,36 @@ public void onMessage(Message message) {
         // todo do something
     }
 ```
+@MQConsumer支持便利的并发配置，说明如下
+
+```java
+
+    /**
+     * 每次从队列拉取的消息数量
+     * 实际上也是消费者线程队列等待数量
+     * 
+     */
+    int prefetchCount() default 1;
+
+    /**
+     * 并发消费者数量，配置格式为"5-10"，也可以配置一个固定消费者数量，比如"10"
+     * 这个数值即为消费者线程池的线程数量配置
+     * 实际上每一个消费者底层都映射了一个Rabbit Channel，每个channel都和一个线程绑定
+     */
+    int concurrency() default 10;
+
+    /**
+     * 最大并发消费者数量
+     * 可选配置，和concurrency有重叠的地方
+     */
+    int maxConcurrentConsumers() default 10;
+    
+    /**
+     * 是否requeue，默认false
+     * 如果为true，则消息不会由task重试，而是立即重新加入队列再次投递，请谨慎配置以防出现循环投递
+     */
+    boolean requeueReject() default false;
+```
 
 ### XML
 XML配置也非常简单，只需注册实现了MessageListener接口实例即可
@@ -179,6 +231,8 @@ public class PrintMessageListener implements MessageListener {
                      ref="printMessageListener"/>
 </mq:consumer>
 ```
+
+XML标签和注解有相同的并发配置，通过listener标签的属性可以配置listener的并发参数，不再赘述。
 
 ---
 
