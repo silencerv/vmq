@@ -36,7 +36,39 @@ mq.connectionFactory.password=password
 对于消费端来说一个很常见的场景是，在应用上线（此处是指向应用中心或者反向代理上线）之后才接受消费者的消费，VMQ通过SPI来对这种需求进行扩展
 
 
-VMQ的消费者（包括注解、XML）都向一个管理类注册，这个类是RabbitAdminService接口的实现类，它的默认实现是com.v.inf.mq.client.admin.RabbitAdminServiceSupport，如果用户相对这个类进行扩展，需要在classpath:META_INF/services目录下以接口名为文件名（即）
+VMQ的消费者（包括注解、XML）都向一个管理类注册，这个类是RabbitAdminService接口的实现类，它的默认实现是com.v.inf.mq.client.admin.RabbitAdminServiceSupport
+
+如果用户相对这个类进行扩展，需要在classpath:META_INF/services目录下以接口名为文件名（即com.v.inf.mq.client.admin.RabbitAdminService）
+文件内容为
+```
+#等号后即实现类全限定名
+default=com.xxx.RabbitAdminServiceImpl
+```
+
+---
+
+## 入门
+以下例子均为示意，具体配置参见具体章节。
+
+### 发送消息
+
+```java
+MessageProducer messageProducer = new DirectMessageProducer();
+        Message message = MessageBuilder.aBasicMessage()
+                .withSubject("subject")
+                .withAttrs(Collections.emptyMap())
+                //发送延迟消息
+                .withDelayMills(100)
+                .build();
+        messageProducer.send(message);
+```
+
+### 消费消息
+
+```java
+@MqConsumer(subjects = "subjectName", group = "groupName")
+public void onMessage(Message message) 
+```
 
 ---
 
