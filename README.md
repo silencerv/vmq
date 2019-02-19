@@ -13,8 +13,9 @@ VMQ是基于RabbitMQ开发，目的是为了提升业务开发效率，支持事
 * 基于SPI进行扩展
 ---
 
-## JDK版本要求
+## 依赖版本要求
 * JDK1.8及以上版本
+* RabbitMq3.7.x及以上版本
 ---
 
 ## 架构
@@ -35,19 +36,6 @@ mq.connectionFactory.hosts=xxx.xxx.xxx.xxx
 mq.connectionFactory.username=user
 mq.connectionFactory.password=password
 ```
-### Listener管理
-对于消费端来说一个很常见的场景是，在应用上线（此处是指向应用中心或者反向代理上线）之后才接受消费者的消费，VMQ通过SPI来对这种需求进行扩展
-
-
-VMQ的消费者（包括注解、XML）都向一个管理类注册，这个类是RabbitAdminService接口的实现类，它的默认实现是com.v.inf.mq.client.admin.RabbitAdminServiceSupport
-
-如果用户相对这个类进行扩展，需要在classpath:META_INF/services目录下以接口名为文件名（即com.v.inf.mq.client.admin.RabbitAdminService）
-文件内容为
-```
-#等号后即实现类全限定名
-default=com.xxx.RabbitAdminServiceImpl
-```
-
 ---
 
 ## 入门
@@ -238,6 +226,19 @@ public class PrintMessageListener implements MessageListener {
 XML标签和注解有相同的并发配置，通过listener标签的属性可以配置listener的并发参数，不再赘述。
 
 ---
+
+## SPI扩展
+### Listener管理
+对于消费端来说一个很常见的场景是，在应用上线（此处是指向应用中心或者反向代理上线）之后才接受消费者的消费或者是在应用下线之后停止所有的消费者，VMQ通过SPI来对这种需求进行扩展
+
+VMQ的消费者（包括注解、XML）都向一个管理类注册，这个类是RabbitAdminService接口的实现类，它的默认实现是com.v.inf.mq.client.admin.RabbitAdminServiceSupport
+
+如果用户相对这个类进行扩展，需要在classpath:META-INF/services目录下以接口名为文件名（即com.v.inf.mq.client.admin.RabbitAdminService）
+文件内容为
+```
+#等号后即实现类全限定名
+default=com.xxx.RabbitAdminServiceImpl
+```
 
 ## TASK部署
 
