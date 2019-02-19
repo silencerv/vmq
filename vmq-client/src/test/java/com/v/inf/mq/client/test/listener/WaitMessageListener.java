@@ -1,4 +1,4 @@
-package com.v;
+package com.v.inf.mq.client.test.listener;
 
 import com.v.inf.mq.Message;
 import com.v.inf.mq.MessageListener;

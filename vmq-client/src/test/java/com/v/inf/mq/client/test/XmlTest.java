@@ -1,4 +1,4 @@
-package com.v;
+package com.v.inf.mq.client.test;
 
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;

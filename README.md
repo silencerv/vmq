@@ -20,6 +20,7 @@ VMQ是基于RabbitMQ开发，目的是为了提升业务开发效率，支持事
 ---
 
 ## 基本配置
+### ConnectionFactory配置
 无论是生产者还是消费者，都需要连接rabbit broker，VMQ通过读取配置文件来得到用户的配置
 
 VMQ默认读取classpath根路径下的vmq.properties文件
@@ -31,10 +32,15 @@ mq.connectionFactory.hosts=xxx.xxx.xxx.xxx
 mq.connectionFactory.username=user
 mq.connectionFactory.password=password
 ```
+### Listener管理
+对于消费端来说一个很常见的场景是，在应用上线（此处是指向应用中心或者反向代理上线）之后才接受消费者的消费，VMQ通过SPI来对这种需求进行扩展
+
+
+VMQ的消费者（包括注解、XML）都向一个管理类注册，这个类是RabbitAdminService接口的实现类，它的默认实现是com.v.inf.mq.client.admin.RabbitAdminServiceSupport，如果用户相对这个类进行扩展，需要在classpath:META_INF/services目录下以接口名为文件名（即）
 
 ---
 
-## Producer配置
+## 生产者配置
 ### 概述
 VMQ的Producer支持事务消息，保证数据库操作和消息具有事务性（全部成功或者全部失败），同时消息的发送是异步的不会阻塞业务操作。
 
@@ -93,7 +99,7 @@ XML依然也是配置Producer和TxManager
 
 ---
 
-## Consumer配置
+## 消费者配置
 ### Annotation
 使用注解前需要先开启注解配置，有两种方案
 
@@ -134,7 +140,7 @@ public class PrintMessageListener implements MessageListener {
 ```
 
 ```xml
-<bean id="printMessageListener" class="com.v.PrintMessageListener"/>
+<bean id="printMessageListener" class="com.v.inf.mq.client.test.listener.PrintMessageListener"/>
 <mq:consumer>
      <mq:listener subject="test"
                      group="test"

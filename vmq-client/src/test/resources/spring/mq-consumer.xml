@@ -8,9 +8,9 @@
        http://www.vmq.com/schema/vmq
        http://www.vmq.com/schema/vmq.xsd">
 
-    <bean id="exMessageListener" class="com.v.ExMessageListener"/>
-    <bean id="printMessageListener" class="com.v.PrintMessageListener"/>
-    <bean id="waitMessageListener" class="com.v.WaitMessageListener"/>
+    <bean id="exMessageListener" class="com.v.inf.mq.client.test.listener.ExMessageListener"/>
+    <bean id="printMessageListener" class="com.v.inf.mq.client.test.listener.PrintMessageListener"/>
+    <bean id="waitMessageListener" class="com.v.inf.mq.client.test.listener.WaitMessageListener"/>
 
     <!--<mq:annotation-driven/>-->
 
