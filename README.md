@@ -13,6 +13,10 @@ VMQ是基于RabbitMQ开发，目的是为了提升业务开发效率，支持事
 * 基于SPI进行扩展
 ---
 
+## JDK版本要求
+* JDK1.8及以上版本
+---
+
 ## 架构
 ![image](https://github.com/silencerv/vmq/blob/master/docs/images/arch.png)
 
@@ -236,6 +240,9 @@ XML标签和注解有相同的并发配置，通过listener标签的属性可以
 ---
 
 ## TASK部署
+
+叮咚：如果不使用事物消息，则不需要部署Task
+
 * TASK依赖于数据库表来进行消息重试，需要先初始化数据库
 ```sql
 CREATE DATABASE IF NOT EXISTS mq;
