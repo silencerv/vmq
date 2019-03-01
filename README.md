@@ -92,7 +92,7 @@ Producer的消息发送依赖于事务提交的操作，所以注解和XML均需
 ```java
 /**
  * 省略数据源配置
- * 配置VMQProducer，会将Producer直接注册到Spring中，后续可以直接饮用
+ * 配置VMQProducer，会将Producer直接注册到Spring中，后续可以直接引用
  */
 @EnableVMQ(producers = @VMQProducer(dataSource = "dataSource"))
 public class VMQConfiguration {
